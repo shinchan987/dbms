@@ -1,0 +1,134 @@
+1. Write a PL/SQL block to print 10,9,8,7,..1.
+2. Write a PL/SQL statement to add odd numbers and multiply even number between 1-
+50.
+3. Write a PL/SQL code to print the reverse of a word.
+4. Write a PL/SQL program to swap the values of two variables. Print the output before
+and after swapping.
+5. Write a PL/SQL program to check whether a date falls on weekend i.e. SATURDAY
+or SUNDAY.
+6. Write a PL/SQL program to count the number of employees in department 50 and
+check whether this department have any vacancies or not. There are 45 vacancies in
+this department.
+7. Write a program in PL/SQL to insert records from one table to another.
+8. Write a PL/SQL program to find the gross salary of an employee.Input the basic
+salary. DA is 40% of basic, TA is 10% of basic, and HRA is 20% of basic (Gross
+salary= DA+TA+HRA).
+
+ChatGPT
+Sure, I'll provide you with PL/SQL code snippets for each of the tasks you've mentioned.
+
+1. Print 10, 9, 8, 7, .. 1
+
+DECLARE
+    i NUMBER := 10;
+BEGIN
+    WHILE i >= 1 LOOP
+        DBMS_OUTPUT.PUT_LINE(i);
+        i := i - 1;
+    END LOOP;
+END;
+
+2. Add odd numbers and multiply even numbers between 1-50
+
+DECLARE
+    sum_odd NUMBER := 0;
+    product_even NUMBER := 1;
+BEGIN
+    FOR i IN 1..50 LOOP
+        IF i MOD 2 = 0 THEN
+            product_even := product_even * i;
+        ELSE
+            sum_odd := sum_odd + i;
+        END IF;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Sum of odd numbers: ' || sum_odd);
+    DBMS_OUTPUT.PUT_LINE('Product of even numbers: ' || product_even);
+END;
+
+3. Print the reverse of a word
+
+DECLARE
+    original_word VARCHAR2(50) := 'PLSQL';
+    reversed_word VARCHAR2(50);
+BEGIN
+    FOR i IN REVERSE 1..LENGTH(original_word) LOOP
+        reversed_word := reversed_word || SUBSTR(original_word, i, 1);
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Original Word: ' || original_word);
+    DBMS_OUTPUT.PUT_LINE('Reversed Word: ' || reversed_word);
+END;
+/
+4. Swap the values of two variables
+
+DECLARE
+    variable1 NUMBER := 10;
+    variable2 NUMBER := 20;
+    temp NUMBER;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Before Swapping: variable1=' || variable1 || ', variable2=' || variable2);
+    -- Swapping logic
+    temp := variable1;
+    variable1 := variable2;
+    variable2 := temp;
+    DBMS_OUTPUT.PUT_LINE('After Swapping: variable1=' || variable1 || ', variable2=' || variable2);
+END;
+/
+5. Check whether a date falls on the weekend (Saturday or Sunday)
+
+DECLARE
+    input_date DATE := TO_DATE('2023-12-03', 'YYYY-MM-DD'); -- Change the date as needed
+    day_of_week VARCHAR2(10);
+BEGIN
+    SELECT TO_CHAR(input_date, 'DAY') INTO day_of_week FROM DUAL;
+
+    IF day_of_week IN ('SATURDAY', 'SUNDAY') THEN
+        DBMS_OUTPUT.PUT_LINE('The date falls on the weekend.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The date does not fall on the weekend.');
+    END IF;
+END;
+/
+6. Count the number of employees in department 50 and check for vacancies
+
+DECLARE
+    dept_number NUMBER := 50;
+    total_employees NUMBER;
+    vacancies NUMBER := 45;
+BEGIN
+    SELECT COUNT(*) INTO total_employees
+    FROM employees
+    WHERE department_id = dept_number;
+
+    DBMS_OUTPUT.PUT_LINE('Total Employees in Department ' || dept_number || ': ' || total_employees);
+
+    IF total_employees < vacancies THEN
+        DBMS_OUTPUT.PUT_LINE('There are vacancies in Department ' || dept_number);
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('No vacancies in Department ' || dept_number);
+    END IF;
+END;
+/
+7. Insert records from one table to another
+Assuming you have two tables (source_table and target_table), you can use the following:
+
+
+DECLARE
+BEGIN
+    INSERT INTO target_table
+    SELECT * FROM source_table;
+    COMMIT;
+END;
+/
+8. Find the gross salary of an employee
+
+DECLARE
+    basic_salary NUMBER := 50000; -- Replace with the actual basic salary
+    DA_percentage NUMBER := 40;
+    TA_percentage NUMBER := 10;
+    HRA_percentage NUMBER := 20;
+    gross_salary NUMBER;
+BEGIN
+    gross_salary := basic_salary + (basic_salary * DA_percentage / 100) + (basic_salary * TA_percentage / 100) + (basic_salary * HRA_percentage / 100);
+    DBMS_OUTPUT.PUT_LINE('Gross Salary: ' || gross_salary);
+END;
+/

@@ -1,0 +1,289 @@
+1) A database is being constructed for storing sales information system which store the information of Client. The client have it own unique client number, client name, client addresses, city, address, pin code, state and total balance to be required to paid.
+Consider the following schema:
+Client (Client_ID, Client_Name, Address, City, Pin, State, Bal_Due)
+Execute the following queries:
+a) Create a View called Client_View1 having all data of Client table.
+b) Create a view called Client_vw2 having Client_ID , city and Bal_Due attributes of client table.
+c) Create a view called Client_vw3 with renaming Client_ID as CID , Client_Name as cname and Address as Addr of client table.
+d) Using Client_view1, print client_name and Balance of Client whose ID is ‘cn01001’.
+e) Insert a row into Client_vw2 (‘cn02003’, ‘alld’, 5000).
+f) Modify view Client_vw2 such that bal_due of Client_ID CN01004 now become 1000.
+g) Delete row from view client_vw2 where Client_ID=’CN02003’.
+h) Delete view client_vw3 from memory.
+i) Consider another table Client2 (ClientID, Phone). Create a view client_vw4 which has clientID, Client_name, bal_due and phone. Use both The tables Client and Client2.
+
+
+ans->
+
+
+
+
+a) Create a View called Client_View1 having all data of the Client table.
+
+sql
+Copy code
+CREATE VIEW Client_View1 AS
+SELECT * FROM Client;
+b) Create a view called Client_vw2 having Client_ID, City, and Bal_Due attributes of the Client table.
+
+sql
+Copy code
+CREATE VIEW Client_vw2 AS
+SELECT Client_ID, City, Bal_Due
+FROM Client;
+c) Create a view called Client_vw3 with renaming Client_ID as CID, Client_Name as cname, and Address as Addr of the Client table.
+
+sql
+Copy code
+CREATE VIEW Client_vw3 AS
+SELECT Client_ID AS CID, Client_Name AS cname, Address AS Addr
+FROM Client;
+d) Using Client_view1, print Client_Name and Balance of Client whose ID is 'cn01001'.
+
+sql
+Copy code
+SELECT Client_Name, Bal_Due
+FROM Client_View1
+WHERE Client_ID = 'cn01001';
+e) Insert a row into Client_vw2 ('cn02003', 'alld', 5000).
+
+sql
+Copy code
+INSERT INTO Client_vw2 (Client_ID, City, Bal_Due)
+VALUES ('cn02003', 'alld', 5000);
+f) Modify view Client_vw2 such that Bal_Due of Client_ID 'CN01004' now becomes 1000.
+
+sql
+Copy code
+UPDATE Client_vw2
+SET Bal_Due = 1000
+WHERE Client_ID = 'CN01004';
+g) Delete a row from view Client_vw2 where Client_ID = 'CN02003'.
+
+sql
+Copy code
+DELETE FROM Client_vw2
+WHERE Client_ID = 'CN02003';
+h) Delete view Client_vw3 from memory.
+
+sql
+Copy code
+DROP VIEW Client_vw3;
+i) Consider another table Client2 (ClientID, Phone). Create a view client_vw4 which has ClientID, Client_name, bal_due, and Phone. Use both the tables Client and Client2.
+
+sql
+Copy code
+CREATE VIEW client_vw4 AS
+SELECT c.Client_ID, c.Client_Name, c.Bal_Due, c2.Phone
+FROM Client c
+JOIN Client2 c2 ON c.Client_ID = c2.ClientID;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A database is being constructed for storing sales information system. The customer who buy the item or order the item have it own unique customer id, customer name, customer city, grade and salesman id of those salesman from which they buy the item. Each customer order is to buy item from the salesman. In the order, it has unique sales order number, sales order date, customer id, salesman id and purchase amount to be paid. The elistsalesman have salesman id, name, city and commission which shows the personal details of all salesman.
+Consider the following schema:
+CUSTOMER (c_id, c_name, city, grade, s_id)
+SALESMAN (s_id, name, city, commission)
+ORDERS (o_no, purchase_amt, o_date, c_id, s_id)
+ELITSALESMAN (s_id, name, city, commission)
+a) Create a view for those salesmen who belong to the city ‘New York’. 
+b) Create a view for all salesmen with columns salesman_id, name and city. 
+c) Find the salesmen of the city New York who achieved the commission more than 13%. 
+d) Create a view to getting a count of how many customers we have at each level of a grade.
+ e) Create a view to keeping track the number of customers ordering, number of salesmen attached, average amount of orders and the total amount of orders in a day. 
+f) Create a view that shows for each order the salesman and customer by name. 
+g) Create a view that finds the salesman who has the customer with the highest order of a day. 
+h) Create a view that finds the salesman who has the customer with the highest order at least 3 times on a day. 
+i) Create a view that shows all of the customers who have the highest grade. 
+j) Create a view that shows the number of the salesman in each city. 
+k) Create a view that shows the average and total orders for each salesman after his or her name. (Assume all names are unique) 
+l) Create a view that shows each salesman with more than one customers. 
+m) Create a view that shows all matches of customers with salesman such that at least one customer in the city of customer served by a salesman in the city of the salesman. 
+n) Create a view that shows the number of orders in each day 
+o) Create a view that finds the salesmen who issued orders on October 10th, 2012. 
+p) Create a view that finds the salesmen who issued orders on either August 17th, 2012 or October 10th, 2012.
+
+ans->
+
+a) Create a view for those salesmen who belong to the city ‘New York’.
+
+sql
+Copy code
+CREATE VIEW NewYorkSalesmen AS
+SELECT *
+FROM SALESMAN
+WHERE city = 'New York';
+b) Create a view for all salesmen with columns salesman_id, name, and city.
+
+sql
+Copy code
+CREATE VIEW AllSalesmen AS
+SELECT s_id AS salesman_id, name, city
+FROM SALESMAN;
+c) Find the salesmen of the city New York who achieved the commission more than 13%.
+
+sql
+Copy code
+CREATE VIEW HighCommissionNY AS
+SELECT *
+FROM SALESMAN
+WHERE city = 'New York' AND commission > 13;
+d) Create a view to get a count of how many customers you have at each level of a grade.
+
+sql
+Copy code
+CREATE VIEW GradeCustomerCount AS
+SELECT grade, COUNT(*) AS customer_count
+FROM CUSTOMER
+GROUP BY grade;
+e) Create a view to keep track of the number of customers ordering, the number of salesmen attached, the average amount of orders, and the total amount of orders in a day.
+
+sql
+Copy code
+CREATE VIEW OrderStatistics AS
+SELECT
+    o_date,
+    COUNT(DISTINCT c_id) AS num_customers,
+    COUNT(DISTINCT s_id) AS num_salesmen,
+    AVG(purchase_amt) AS avg_order_amount,
+    SUM(purchase_amt) AS total_order_amount
+FROM ORDERS
+GROUP BY o_date;
+f) Create a view that shows for each order the salesman and customer by name.
+
+sql
+Copy code
+CREATE VIEW OrderDetails AS
+SELECT
+    o.o_no,
+    o.purchase_amt,
+    o.o_date,
+    c.c_name AS customer_name,
+    s.name AS salesman_name
+FROM ORDERS o
+JOIN CUSTOMER c ON o.c_id = c.c_id
+JOIN SALESMAN s ON o.s_id = s.s_id;
+g) Create a view that finds the salesman who has the customer with the highest order of a day.
+
+sql
+Copy code
+CREATE VIEW HighestOrderSalesman AS
+SELECT
+    o.o_date,
+    s.s_id AS salesman_id,
+    s.name AS salesman_name
+FROM ORDERS o
+JOIN SALESMAN s ON o.s_id = s.s_id
+WHERE (o.c_id, o.purchase_amt) IN (
+    SELECT c_id, MAX(purchase_amt) AS max_purchase
+    FROM ORDERS
+    GROUP BY c_id
+);
+h) Create a view that finds the salesman who has the customer with the highest order at least 3 times on a day.
+
+sql
+Copy code
+CREATE VIEW HighOrderFreqSalesman AS
+SELECT
+    o.o_date,
+    s.s_id AS salesman_id,
+    s.name AS salesman_name
+FROM ORDERS o
+JOIN SALESMAN s ON o.s_id = s.s_id
+WHERE (o.c_id, o.purchase_amt) IN (
+    SELECT c_id, purchase_amt
+    FROM ORDERS
+    GROUP BY c_id, purchase_amt
+    HAVING COUNT(*) >= 3
+);
+i) Create a view that shows all the customers who have the highest grade.
+
+sql
+Copy code
+CREATE VIEW HighGradeCustomers AS
+SELECT *
+FROM CUSTOMER c1
+WHERE grade = (
+    SELECT MAX(grade)
+    FROM CUSTOMER c2
+    WHERE c1.c_id = c2.c_id
+);
+j) Create a view that shows the number of salesmen in each city.
+
+sql
+Copy code
+CREATE VIEW SalesmenCountByCity AS
+SELECT city, COUNT(*) AS num_salesmen
+FROM SALESMAN
+GROUP BY city;
+k) Create a view that shows the average and total orders for each salesman after his or her name. (Assume all names are unique)
+
+sql
+Copy code
+CREATE VIEW SalesmanOrderStats AS
+SELECT
+    s.s_id AS salesman_id,
+    s.name AS salesman_name,
+    AVG(o.purchase_amt) AS avg_order_amount,
+    SUM(o.purchase_amt) AS total_order_amount
+FROM SALESMAN s
+LEFT JOIN ORDERS o ON s.s_id = o.s_id
+GROUP BY s.s_id, s.name;
+l) Create a view that shows each salesman with more than one customer.
+
+sql
+Copy code
+CREATE VIEW SalesmanMultipleCustomers AS
+SELECT
+    s.s_id AS salesman_id,
+    s.name AS salesman_name
+FROM SALESMAN s
+JOIN ORDERS o ON s.s_id = o.s_id
+GROUP BY s.s_id, s.name
+HAVING COUNT(DISTINCT o.c_id) > 1;
+m) Create a view that shows all matches of customers with salesmen such that at least one customer in the city of a customer is served by a salesman in the city of the salesman.
+
+sql
+Copy code
+CREATE VIEW CityMatchCustomers AS
+SELECT
+    c.c_id AS customer_id,
+    c.c_name AS customer_name,
+    c.city AS customer_city,
+    s.s_id AS salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city
+FROM CUSTOMER c
+JOIN SALESMAN s ON c.city = s.city;
+n) Create a view that shows the number of orders on each day.
+
+sql
+Copy code
+CREATE VIEW OrdersPerDay AS
+SELECT
+    o_date,
+    COUNT(*) AS num_orders
+FROM ORDERS
+GROUP BY o_date;
+o) Create a view that finds the salesmen who issued orders on October 10th, 2012.
+
+sql
+Copy code
+CREATE VIEW October10Salesmen AS
+SELECT DISTINCT
+    s.s_id AS salesman_id,
+    s.name AS salesman_name
+FROM SALESMAN s
+JOIN ORDERS o ON s.s_id = o.s_id
+WHERE o.o_date = TO_DATE('2012-10-10', 'YYYY-MM-DD');
+p) Create a view that finds the salesmen who issued orders on either August 17th, 2012, or October 10th, 2012.
+
+sql
+Copy code
+CREATE VIEW August17OrOctober10Salesmen AS
+SELECT DISTINCT
+    s.s_id AS salesman_id,
+    s.name AS salesman_name
+FROM SALESMAN s
+JOIN ORDERS o ON s.s_id = o.s_id
+WHERE o.o_date IN (TO_DATE('2012-08-17', 'YYYY-MM-DD'), TO_DATE('2012-10-10', 'YYYY-MM-DD'));
+

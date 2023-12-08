@@ -1,0 +1,261 @@
+Consider the sales info system consisting of following schemas:-
+Employee (E_id, First_Name, Last_Name, Salary, Joining_Date, Department)
+Bonus (E_Ref_Id, Bonus_Date, Bonus_Amount)
+Job_Title (E_Ref_Id, E_Title, Affected_From)
+Write the SQL queries for the following with respect to database created: –
+a) Fetch first name of worker using alias name as E_Name.
+b) List the last name of employees in upper case.
+c) Retrieve the first three characters of employees from their first name.
+d) Retrieve the unique values of department and display its length.
+e) List the first name from employees table after replacing ‘a’ with ‘A’.
+f) Display all worker details, use order by in first name asec and department in desc.
+g) List the details of an employee whose first name ends with ‘h’ and contains six alphabets.
+h) Display the details of employees who have joined in Feb 2014.
+i) Fetch the employee’s names with salaries over and equal to 50000 and less than equal to 100000.
+j) List the no. of employees for each department in desc order.
+k) Print the details of employees who are also managers.
+l) Fetch the duplicate records having matching data in some fields of a table.
+m) Fetch intersecting records of two tables.
+n) Find the nth (say n=5) highest salary from a table.
+o) Find the 4th highest salary without using TOP or limit method.
+p) List the details of employees with the same salary.
+q) Display the second highest salary from a table.
+r) Display all departments along with the number of people in there.
+s) List the name of employees having the highest salary in each department.
+t) Fetch three min salaries from a table
+u) Fetch departments along with the total salaries paid for each of them.
+v) Fetch the names of employees who earn the highest salary.
+
+
+
+
+a)
+SELECT First_Name AS E_Name FROM Employee;
+
+b)
+SELECT UPPER(Last_Name) FROM Employee;
+
+c)
+
+SELECT SUBSTRING(First_Name, 1, 3) FROM Employee;
+
+d)
+
+SELECT DISTINCT Department, LENGTH(Department) FROM Employee;
+
+e)
+
+SELECT REPLACE(First_Name, 'a', 'A') FROM Employee;
+
+f)
+SELECT * FROM Employee ORDER BY First_Name ASC, Department DESC;
+
+g)
+SELECT * FROM Employee WHERE LENGTH(First_Name) = 6 AND RIGHT(First_Name, 1) = 'h';
+
+h)
+SELECT * FROM Employee WHERE MONTH(Joining_Date) = 2 AND YEAR(Joining_Date) = 2014;
+
+i)
+SELECT First_Name, Last_Name FROM Employee WHERE Salary >= 50000 AND Salary <= 100000;
+
+j)
+SELECT Department, COUNT(*) as Employee_Count FROM Employee GROUP BY Department ORDER BY Employee_Count DESC;
+
+k)
+SELECT * FROM Employee WHERE Is_Manager = 1;
+l)
+SELECT E_id, First_Name, Last_Name, COUNT(*) FROM Employee GROUP BY E_id, First_Name, Last_Name HAVING COUNT(*) > 1;
+
+m)
+SELECT * FROM Employee INNER JOIN Bonus ON Employee.E_id = Bonus.E_Ref_Id;
+
+
+n)
+SELECT DISTINCT Salary FROM Employee ORDER BY Salary DESC LIMIT 1 OFFSET 4;
+
+o)
+SELECT DISTINCT Salary FROM Employee e1 WHERE 4 = (SELECT COUNT(DISTINCT Salary) FROM Employee e2 WHERE e2.Salary >= e1.Salary);
+
+p)
+SELECT * FROM Employee WHERE Salary IN (SELECT Salary FROM Employee GROUP BY Salary HAVING COUNT(*) > 1);
+
+q)
+SELECT DISTINCT Salary FROM Employee ORDER BY Salary DESC LIMIT 1 OFFSET 1;
+
+r)
+SELECT Department, COUNT(*) as Employee_Count FROM Employee GROUP BY Department;
+
+s)
+SELECT Department, First_Name, Last_Name, Salary FROM Employee e1
+WHERE Salary = (SELECT MAX(Salary) FROM Employee e2 WHERE e2.Department = e1.Department);
+
+t)
+SELECT DISTINCT Salary FROM Employee ORDER BY Salary ASC LIMIT 3;
+
+
+u)
+SELECT Department, SUM(Salary) as Total_Salary FROM Employee GROUP BY Department;
+
+v)
+SELECT First_Name, Last_Name FROM Employee WHERE Salary = (SELECT MAX(Salary) FROM Employee);
+
+
+-------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Exercises on using Having and Group By Clauses:
+a. Print the description and total qty sold for each product.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION, SUM(sod.QTY_ORDERED) AS total_qty_sold
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+GROUP BY p.PRODUCT_NO, p.DESCRIPTION;
+b. Find the value of each product sold.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION, SUM(sod.QTY_ORDERED * p.SELL_PRICE) AS total_value_sold
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+GROUP BY p.PRODUCT_NO, p.DESCRIPTION;
+c. Calculate the average qty sold for each client that has a maximum order value of 15000.00.
+sql
+Copy code
+SELECT s.CLIENT_NO, AVG(sod.QTY_ORDERED) AS avg_qty_sold
+FROM SALES_ORDER s
+JOIN SALES_ORDER_DETAILS sod ON s.ORDER_NO = sod.ORDER_NO
+WHERE s.BAL_DUE <= 15000
+GROUP BY s.CLIENT_NO;
+d. Find out the total of all the billed orders for the month of June.
+sql
+Copy code
+SELECT SUM(BILL_YorN) AS total_billed_orders
+FROM SALES_ORDER
+WHERE MONTH(ORDER_DATE) = 6;
+ii) Exercise on Joins and Correction:
+a. Find out the products, which have been sold to 'Ivan Bayross'.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+JOIN SALES_ORDER so ON sod.ORDER_NO = so.ORDER_NO
+JOIN CLIENT_MASTER c ON so.CLIENT_NO = c.CLIENT_NO
+WHERE c.NAME = 'Ivan Bayross';
+b. Find out the products and their quantities that will have to be delivered in the current month.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION, sod.QTY_ORDERED
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+JOIN SALES_ORDER so ON sod.ORDER_NO = so.ORDER_NO
+WHERE MONTH(so.ORDER_DATE) = MONTH(CURDATE());
+c. List the Product_No. and description of constantly sold (i.e. rapidly moving) products.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+GROUP BY p.PRODUCT_NO, p.DESCRIPTION
+HAVING COUNT(DISTINCT sod.ORDER_NO) >= 3;
+d. Find the names of clients who have purchased 'Trousers'.
+sql
+Copy code
+SELECT c.NAME
+FROM CLIENT_MASTER c
+JOIN SALES_ORDER so ON c.CLIENT_NO = so.CLIENT_NO
+JOIN SALES_ORDER_DETAILS sod ON so.ORDER_NO = sod.ORDER_NO
+JOIN PRODUCT_MASTER p ON sod.PRODUCT_NO = p.PRODUCT_NO
+WHERE p.DESCRIPTION = 'Trousers';
+e. List the products and orders from customers who have ordered less than 5 units of 'Pull Overs'.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION, sod.ORDER_NO, sod.QTY_ORDERED
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+JOIN SALES_ORDER so ON sod.ORDER_NO = so.ORDER_NO
+JOIN CLIENT_MASTER c ON so.CLIENT_NO = c.CLIENT_NO
+WHERE p.DESCRIPTION = 'Pull Overs' AND sod.QTY_ORDERED < 5;
+f. Find the products and their quantities for the orders placed by 'Ivan Bayross' and 'Mamta Muzumdar'.
+sql
+Copy code
+SELECT p.PRODUCT_NO, p.DESCRIPTION, sod.QTY_ORDERED, c.NAME
+FROM PRODUCT_MASTER p
+JOIN SALES_ORDER_DETAILS sod ON p.PRODUCT_NO = sod.PRODUCT_NO
+JOIN SALES_ORDER so ON sod.ORDER_NO = so.ORDER_NO
+JOIN CLIENT_MASTER c ON so.CLIENT_NO = c.CLIENT_NO
+WHERE c.NAME IN ('Ivan Bayross', 'Mamta Muzumdar');
+ii) Exercise on Sub-queries:
+a. Find the Product_No and description of non-moving products i.e. products not being sold.
+sql
+Copy code
+SELECT PRODUCT_NO, DESCRIPTION
+FROM PRODUCT_MASTER
+WHERE PRODUCT_NO NOT IN (SELECT DISTINCT PRODUCT_NO FROM SALES_ORDER_DETAILS);
+b. List the customer Name, Address1, Address2, City and PinCode for the client who has placed order no 'O19001'.
+sql
+Copy code
+SELECT c.NAME, c.ADDRESS1, c.ADDRESS2, c.CITY, c.PINCODE
+FROM CLIENT_MASTER c
+JOIN SALES_ORDER so ON c.CLIENT_NO = so.CLIENT_NO
+WHERE so.ORDER_NO = 'O19001';
+c. List the client names that have placed orders before the month of May, '02.
+sql
+Copy code
+SELECT c.NAME
+FROM CLIENT_MASTER c
+JOIN SALES_ORDER so ON c.CLIENT_NO = so.CLIENT_NO
+WHERE so.ORDER_DATE < '2002-05-01';
+d. List if the product 'Lycra Top' has been ordered by any client and print the Client_no, Name to whom it was sold.
+sql
+Copy code
+SELECT c.CLIENT_NO, c.NAME
+FROM CLIENT_MASTER c
+JOIN SALES_ORDER so ON c.CLIENT_NO = so.CLIENT_NO
+JOIN SALES_ORDER_DETAILS sod ON so.ORDER_NO = sod.ORDER_NO
+JOIN PRODUCT_MASTER p ON sod.PRODUCT_NO = p.PRODUCT_NO
+WHERE p.DESCRIPTION = 'Lycra Tops';
+e. List the names of clients who have placed orders worth Rs. 10000 or more.
+sql
+Copy code
+SELECT c.NAME
+FROM CLIENT_MASTER c
+JOIN SALES_ORDER so ON c.CLIENT_NO = so.CLIENT_NO
+WHERE so.BAL_DUE >= 10000;
+
+
+
+
+

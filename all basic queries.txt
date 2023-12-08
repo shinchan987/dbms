@@ -1,0 +1,145 @@
+distinct->
+SELECT COUNT(DISTINCT Country) FROM Customers;
+--------------------------------------------------------
+order by->
+SELECT column1, column2, ...
+FROM table_name
+ORDER BY column1, column2, ... ASC|DESC;
+
+SELECT * FROM Customers
+ORDER BY Country ASC, CustomerName DESC;
+-------------------------------------------------------
+and->
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition1 AND condition2 AND condition3 ...;
+
+SELECT * FROM Customers
+WHERE Country = 'Spain' AND (CustomerName LIKE 'G%' OR CustomerName LIKE 'R%');
+// hereselect all data from customers table where country is spain and the name starts with G or R
+----------------------------------------------------------
+
+not->
+SELECT column1, column2, ...
+FROM table_name
+WHERE NOT condition;
+
+
+SELECT * FROM Customers
+WHERE  NOT city IN ('Paris', 'London');
+---------------------------------------------------------
+insert into->
+INSERT INTO table_name (column1, column2, column3, ...)
+VALUES (value1, value2, value3, ...);
+
+
+
+INSERT INTO Customers (CustomerName, City, Country)
+VALUES ('Cardinal', 'Stavanger', 'Norway');
+// data in specified column only rest are all null
+
+---------------------------------------------------------
+is null->
+SELECT column_names
+FROM table_name
+WHERE column_name IS NULL;
+----------------------------------------------------------
+update->
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+
+---------------------------------------------------------
+create table->
+ 
+create table tablename(
+phonenumber varchar(10),
+name varchar(20),
+age int
+
+);
+-------------------------------------------------------------
+delete syntax->
+DELETE FROM table_name WHERE condition;
+
+drop table->//removes all table also the structure of table is removed
+DROP TABLE Customers;
+--------------------------------------------------------------
+min or max->
+SELECT MIN(column_name)
+FROM table_name
+WHERE condition;
+-------------------------------------------------------------
+count->
+SELECT COUNT(column_name)
+FROM table_name
+WHERE condition;
+------------------------------------------------------------
+sum->
+
+SELECT SUM(Price * Quantity)
+FROM OrderDetails
+LEFT JOIN Products ON OrderDetails.ProductID = Products.ProductID;
+------------------------------------------------------------
+like->
+
+
+SELECT column1, column2, ...
+FROM table_name
+WHERE columnN LIKE pattern;
+
+
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'a%' OR CustomerName LIKE 'b%';
+
+
+//Return all customers that starts with "b" and ends with "s":
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'b%s';
+
+
+//starting with a to f
+SELECT * FROM Customers
+WHERE CustomerName LIKE '[a-f]%';
+
+
+//Return all customers that have an order in the Orders table:
+
+SELECT * FROM Customers
+WHERE CustomerID IN (SELECT CustomerID FROM Orders);
+
+---------------------------------------------------------------
+alter->
+alter table->
+
+
+ALTER TABLE table_name
+ADD column_name datatype;
+
+ALTER TABLE Customers
+ADD Email varchar(255);
+
+ALTER TABLE table_name
+DROP COLUMN column_name;
+
+ALTER TABLE table_name
+RENAME COLUMN old_name to new_name;
+
+
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype;
+
+ALTER TABLE Persons
+ALTER COLUMN DateOfBirth year;
+
+
+
+
+
+
+
+
+
+
+

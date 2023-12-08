@@ -1,0 +1,127 @@
+1. Write a PL/SQL program to print “HELLO WORLD”.
+2. Write a PL/SQL code for inverting a number. (Example: 1234 – 4321)
+3. Write a PL/SQL code to find the greatest number among three with Anonymous blocks.
+4. Write a PL/SQL code to calculate the area of a circle where radius takes values from 3 to 7.
+Store the calculated area in Table AREA.
+The schema of table is given below:
+AREA (Radius, Area)
+5. Write a PL/SQL program to accept a number and find the factorial of the number
+6. Write a PL/SQL program to display the months between two dates of a year.
+7. Create an Account_Master table & insert the tuples as given in the question. Write a PL/SQL
+code that will accept an account number from user. If the balance of account is less than
+minimum balance (i.e 1000), then deduct Rs 100 from balance.
+The schema of table is given below:
+Acc_Master (acct_no, acct_holder_name , Balance);
+Create table Account_Master(acct_no number(5) primary key, acct _holder_name
+varchar2(10), balance number(10));
+Tuples to be inserted are:
+insert into Account_Master values(1,'John',1000);
+insert into Account_Master values(2,'Denis',100);
+insert into Account_Master values(3,'Albert',1100);
+insert into Account_Master values(4,'Charles',700);
+insert into Account_Master values(5,'Darwin',1700);
+
+
+
+1. Print "HELLO WORLD"
+plsql
+Copy code
+DECLARE
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('HELLO WORLD');
+END;
+/
+2. Invert a Number (e.g., 1234 → 4321)
+plsql
+Copy code
+DECLARE
+    num NUMBER := 1234; -- Replace with your desired number
+    inverted_num NUMBER := 0;
+    digit NUMBER;
+BEGIN
+    WHILE num > 0 LOOP
+        digit := num MOD 10;
+        inverted_num := inverted_num * 10 + digit;
+        num := num / 10;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Inverted Number: ' || TO_CHAR(inverted_num));
+END;
+/
+3. Find the Greatest Number among Three
+plsql
+Copy code
+DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 20;
+    num3 NUMBER := 15;
+    greatest NUMBER;
+BEGIN
+    greatest := GREATEST(num1, num2, num3);
+    DBMS_OUTPUT.PUT_LINE('Greatest Number: ' || TO_CHAR(greatest));
+END;
+/
+4. Calculate the Area of a Circle and Store in Table
+plsql
+Copy code
+DECLARE
+    radius NUMBER;
+    area NUMBER;
+BEGIN
+    FOR radius IN 3..7 LOOP
+        area := 3.14 * radius * radius;
+        INSERT INTO AREA (Radius, Area) VALUES (radius, area);
+    END LOOP;
+    COMMIT;
+END;
+/
+5. Find the Factorial of a Number
+plsql
+Copy code
+DECLARE
+    num NUMBER := 5; -- Replace with your desired number
+    factorial NUMBER := 1;
+BEGIN
+    FOR i IN 1..num LOOP
+        factorial := factorial * i;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Factorial of ' || num || ': ' || TO_CHAR(factorial));
+END;
+/
+6. Display Months Between Two Dates
+plsql
+Copy code
+DECLARE
+    start_date DATE := TO_DATE('2023-01-01', 'YYYY-MM-DD'); -- Replace with your start date
+    end_date DATE := TO_DATE('2023-12-31', 'YYYY-MM-DD'); -- Replace with your end date
+BEGIN
+    FOR month_rec IN (SELECT TO_CHAR(add_months(start_date, LEVEL - 1), 'MONTH') AS month_name
+                     FROM dual
+                     CONNECT BY add_months(start_date, LEVEL - 1) <= end_date)
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(month_rec.month_name);
+    END LOOP;
+END;
+/
+7. Deduct Rs 100 if Balance is Less Than Minimum
+plsql
+Copy code
+DECLARE
+    account_number NUMBER := &account_number; -- Prompt for account number
+    minimum_balance NUMBER := 1000;
+    current_balance NUMBER;
+BEGIN
+    SELECT balance INTO current_balance
+    FROM Acc_Master
+    WHERE acct_no = account_number;
+
+    IF current_balance < minimum_balance THEN
+        UPDATE Acc_Master
+        SET balance = balance - 100
+        WHERE acct_no = account_number;
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Rs 100 deducted from the account balance.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Balance is above the minimum balance.');
+    END IF;
+END;
+/
